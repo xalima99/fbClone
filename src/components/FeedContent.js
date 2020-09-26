@@ -25,7 +25,7 @@ const FeedContent = () => {
         setallposts(snap.docs.map((doc) => doc.data()));
       });
 
-    return () => unsuscribe();
+    return () => unsuscribe()
   }, []);
 
   // useEffect(() => {
@@ -254,7 +254,7 @@ const FeedContent = () => {
       </div>
 
       {allposts.map((post) => {
-        return <SinglePost key={post.postId} post={post} />;
+        return <SinglePost key={Math.random()} post={post} />;
       })}
     </div>
   );

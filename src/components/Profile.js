@@ -107,7 +107,7 @@ const Profile = () => {
 
         setinfosLoading(false);
       });
-  }, [id]);
+  }, [id,ownPost]);
         
 
   return (

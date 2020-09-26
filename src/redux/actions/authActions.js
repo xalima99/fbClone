@@ -33,7 +33,6 @@ export const signIn = (user) => async (dispatch) => {
                 birthday: `${user.Day} ${user.Month} ${user.Year}`,
                 Gender: user.Gender,
               };
-              console.log(loggedInUser);
               localStorage.setItem("user", JSON.stringify(loggedInUser.uid));
               dispatch({
                 type: authTypes.SIGN_IN_SUCCESS,

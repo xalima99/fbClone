@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useParams } from "react-router-dom";
 import db, { storage } from "../redux/firebase/firebase";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 const FormProfile = ({ profileInfos }) => {
   const [image, setImage] = useState("");
   const [progress, setProgress] = useState(0);
-  const [posting, setposting] = useState(false);
+  const [posting, setposting] = useState(true);
   const [firstName, setfirstName] = useState(profileInfos.FirstName);
   const [lastName, setlastName] = useState(profileInfos.LastName);
   const [touched, settouched] = useState(false);
@@ -20,6 +20,14 @@ const FormProfile = ({ profileInfos }) => {
       setImage(e.target.files[0]);
     }
   };
+
+  useEffect(() => {
+    if(!image && firstName == profileInfos.FirstName && lastName && profileInfos.LastName){
+      settouched(false)
+    }else{
+      settouched(true)
+    }
+  }, [firstName, lastName, image]);
 
 
   const handleUploadprofile = (e) => {
@@ -82,6 +90,7 @@ const FormProfile = ({ profileInfos }) => {
                     },
                   });
                   setProgress(0);
+                  window.location.reload()
                 });
               toast.success("Profile successfully updated");
             });
@@ -187,6 +196,7 @@ const FormProfile = ({ profileInfos }) => {
             {/* form-group// */}
             <div className="form-group">
               <button
+              disabled={!touched}
                 type="submit"
                 className="btn btn-primary btn-block"
               >

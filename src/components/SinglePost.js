@@ -2,24 +2,35 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import db from "../redux/firebase/firebase";
 import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SinglePost = ({ post }) => {
   const [fetchedImg, setfetchedImg] = useState("");
   const [infosLoading, setinfosLoading] = useState(false);
-  const userImg = useSelector(state => state.auth.userImg)
+  const userImg = useSelector((state) => state.auth.userImg);
+  const uid = useSelector((state) => state.auth.uid);
 
   useEffect(() => {
     db.collection("profilImgs")
       .doc(post.uid)
       .get()
       .then((snap) => {
-        setfetchedImg(snap.data()?.profileImg);
+        setfetchedImg(snap?.data()?.profileImg);
       });
   }, [post.uid]);
 
-  console.log(post.uid);
+
+  const deletePost = (id) => {
+    db.collection('allposts').doc(id).delete()
+    .then(() => {
+      toast.success("Post successfully deleted");
+    })
+  }
+
   return (
     <div className="recentcontainer">
+    <ToastContainer />
       {infosLoading ? (
         <div className="spinner">
           <svg
@@ -61,20 +72,22 @@ const SinglePost = ({ post }) => {
             </Link>
             <p>
               <Link className="date" to="#">
-                {/* {post.timestamp?.toDate()} */}
+                Published at {new Date(post?.timestamp?.toDate()).toUTCString()}
               </Link>
               <Link to="#">
                 <i className="fa fa-globe" />
               </Link>
             </p>
-            <div className="rightsideofpost">
-              <Link className="follow" to="#">
-                <i className="fa fa-star" />
-              </Link>
-              <Link className="personpostmenu" to="#">
-                <i className="fa fa-caret-down" />
-              </Link>
-            </div>
+            {uid === post.uid ? (
+              <div className="rightsideofpost">
+                <Link className="follow" to="#" onClick={() => deletePost(post.postId)}>
+                  <i className="fas fa-trash"></i>
+                </Link>
+                <Link className="personpostmenu" to="#">
+                  <i className="fa fa-caret-down" />
+                </Link>
+              </div>
+            ) : null}
             <p />
           </div>
           <div className="newpost">
@@ -145,7 +158,7 @@ const SinglePost = ({ post }) => {
           <div className="commentpost">
             <div className="input-group">
               <Link to="#">
-                <img alt="helloword" src={userImg} />
+                <img alt="helloword" src={userImg ? userImg : 'https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg'} />
               </Link>
               <textarea
                 className="form-control"
