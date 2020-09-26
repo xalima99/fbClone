@@ -1,370 +1,261 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import SinglePost from "./SinglePost";
+import { Link } from "react-router-dom";
+import db, { storage, timestamp } from "../redux/firebase/firebase";
+import { useSelector, useDispatch } from "react-redux";
+
 
 const FeedContent = () => {
+  const [image, setImage] = useState(null);
+  const [caption, setCaption] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [file, setfile] = useState(null);
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [posting, setposting] = useState(false);
+  const [allposts, setallposts] = useState([]);
+  const [fetchedImg, setfetchedImg] = useState('');
+  // let unsubscribe;
+
+  useEffect(() => {
+    const unsuscribe = db
+      .collection("allposts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snap) => {
+        setallposts(snap.docs.map((doc) => doc.data()));
+      });
+
+    return () => unsuscribe();
+  }, []);
+
+  // useEffect(() => {
+  //   db.collection('profilImgs').doc(auth.uid).get()
+  //   .then(snap => {
+  //     setfetchedImg(snap.data().profileImg)
+  //   })
+  // }, []);
+
+  const handleChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+      setfile(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const handleUpload = (e) => {
+    e.preventDefault();
+    setposting(true);
+    if (image) {
+      const uploadTask = storage.ref(`/images/${image.name}`).put(image);
+      uploadTask.on(
+        "state_changed",
+        (snapchot) => {
+          //takes a snap shot of the process as it is happening
+          const progressbar = Math.round(
+            (snapchot.bytesTransferred / snapchot.totalBytes) * 100
+          );
+          setProgress(progressbar);
+        },
+        //eroor function
+        (e) => {
+          alert(e.message);
+        },
+        () => {
+          //success upload funciton
+          storage
+            .ref("images")
+            .child(image.name) //Now we go get the img url
+            .getDownloadURL()
+            .then((url) => {
+              //Now we post img Url inside DB
+              db.collection("allposts").add({
+                timestamp: timestamp,
+                caption: caption,
+                imageUrl: url,
+                username: `${auth.FirstName} ${auth.LastName}`,
+                uid: auth.uid,
+                fetchedImg: fetchedImg
+              })
+              .then((Current) => {
+                db.collection('allposts').doc(Current.id).update({
+                  postId:Current.id
+                })
+                dispatch({ type: "IMGPOSTED" });
+                setProgress(0);
+                setCaption("");
+                setImage(null);
+                setfile(null);
+                setposting(false);
+              });
+              // db.collection("users")
+              //   .doc(auth.uid)
+              //   .collection("posts")
+              //   .add({
+              //     timestamp: timestamp,
+              //     caption: caption,
+              //     imageUrl: url,
+              //     username: `${auth.FirstName} ${auth.LastName}`,
+              //     uid: auth.uid,
+              //   })
+              //   .then((post) => {
+              //     db.collection("allposts")
+              //       .doc(post.id)
+              //       .set({
+              //         timestamp: timestamp,
+              //         caption: caption,
+              //         imageUrl: url,
+              //         username: `${auth.FirstName} ${auth.LastName}`,
+              //         uid: auth.uid,
+              //         postId: post.id,
+              //       })
+              //       .then(() => {
+              //         dispatch({ type: "IMGPOSTED" });
+              //         setProgress(0);
+              //         setCaption("");
+              //         setImage(null);
+              //         setfile(null);
+              //         setposting(false);
+              //       });
+              //   })
+              //   .catch((e) => console.log(e));
+            });
+        }
+      );
+    } else {
+      db.collection("allposts").add({
+        timestamp: timestamp,
+        caption: caption,
+        username: `${auth.FirstName} ${auth.LastName}`,
+        uid: auth.uid,
+        fetchedImg: fetchedImg
+      })
+      .then((ee) => {
+        db.collection('allposts').doc(ee.id).update({
+          postId: ee.id
+        })
+        dispatch({ type: "IMGPOSTED" });
+        setProgress(0);
+        setCaption("");
+        setImage(null);
+        setfile(null);
+        setposting(false);
+      });
+      // db.collection("users")
+      //   .doc(auth.uid)
+      //   .collection("posts")
+      //   .add({
+      //     timestamp: timestamp,
+      //     caption: caption,
+      //     username: `${auth.FirstName} ${auth.LastName}`,
+      //     uid: auth.uid,
+      //   })
+      //   .then((post) => {
+      //     db.collection("allposts")
+      //       .doc(post.id)
+      //       .set({
+      //         timestamp: timestamp,
+      //         caption: caption,
+      //         username: `${auth.FirstName} ${auth.LastName}`,
+      //         uid: auth.uid,
+      //         postId: post.id,
+      //       })
+      //       .then(() => {
+      //         dispatch({ type: "PLAINPOSTED" });
+      //         setCaption("");
+      //         setposting(false);
+      //       })
+      //       .catch((e) => dispatch({ type: "POSTERROR" }));
+      //   })
+      //   .catch((e) => console.log(e));
+    }
+  };
+
   return (
     <div className="feed-content">
       <div className="recentcontainer">
-        <ul className="newpostheader nav nav-tabs nav-justified">
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-pencil" />
-              <span>Create a Post</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-book" />
-              <span>Media Album</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-video-camera" />
-              <span>Live Video</span>
-            </a>
-          </li>
-        </ul>
-        <div className="newpost">
-          <textarea
-            className="yo"
-            placeholder="Post Something..."
-            defaultValue={""}
-          />
-        </div>
-        <ul className="newpostfooter nav nav-tabs nav-justified">
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-picture-o" />
-              <span>Photo/Video</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-smile-o" />
-              <span>Feeling/Activity</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-ellipsis-h" />
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div className="recentcontainer">
-        <div className="newpostheader">
-          <a href="javascript:void(0)">
-            <img src="//i.imgur.com/5jInimY.jpg" />
-            <span className="name">First Last</span>
-          </a>
-          <span>
-            shared <a href="javascript:void(0)">Demyos's</a>{" "}
-            <a href="javascript:void(0)">post</a>.
-          </span>
-          <p>
-            <a className="date" href="javascript:void(0)">
-              44 mins
-            </a>
-            <a href="javascript:void(0)">
-              <i className="fa fa-globe" />
-            </a>
-          </p>
-          <div className="rightsideofpost">
-            <a className="follow" href="javascript:void(0)">
-              <i className="fa fa-star" />
-            </a>
-            <a className="personpostmenu" href="javascript:void(0)">
-              <i className="fa fa-caret-down" />
-            </a>
-          </div>
-          <p />
-        </div>
-        <div className="newpost">
-          <div className="postcontent">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate
-            sunt quasi in quam asperiores! Optio voluptate impedit eos ex nisi,
-            molestias facilis sint cupiditate, dolores veritatis cum? Enim vel,
-            qui!
-          </div>
-        </div>
-        <ul className="newpostfooter nav nav-tabs nav-justified">
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-thumbs-up" />
-              <span>Like</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" title="Leave a comment">
-              <i className="fa fa-comment-o" />
-              <span>Comment</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="javascript:void(0)"
-              title="Send this to friends or post it to your timeline"
-            >
-              <i className="fa fa-share" />
-              <span>Share</span>
-            </a>
-          </li>
-        </ul>
-        <ul className="community-counter nav nav-tabs nav-justified">
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-thumbs-up" />
-              <span>1</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-comment-o" />
-              <span>3</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-share" />
-              <span>4</span>
-            </a>
-          </li>
-        </ul>
-        <div className="commentpost">
-          <div className="input-group">
-            <a href="javascript:void(0)">
-              <img src="//i.imgur.com/5jInimY.jpg" />
-            </a>
+        <form onSubmit={handleUpload}>
+          <ul className="newpostheader nav nav-tabs nav-justified">
+            <li>
+              <Link to="#">
+                <i className="fa fa-pencil" />
+                <span>Create a Post</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="#">
+                <i className="fa fa-book" />
+                <span>Media Album</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="#">
+                <i className="fa fa-video-camera" />
+                <span>Live Video</span>
+              </Link>
+            </li>
+          </ul>
+          <div className="newpost">
             <textarea
-              className="form-control"
-              placeholder="Write a comment..."
-              defaultValue={""}
+              className="yo"
+              placeholder="Post Something..."
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
             />
-            <div className="input-group-btn">
-              <a className="btn btn-default" href="javascript:void(0)">
-                <i className="fa fa-smile-o" />
-              </a>
-              <a className="btn btn-default" href="javascript:void(0)">
-                <i className="fa fa-picture-o" />
-              </a>
-              <a className="btn btn-default" href="javascript:void(0)">
-                <i className="fa fa-gift" />
-              </a>
-            </div>
           </div>
-        </div>
-      </div>
-      <div className="recentcontainer">
-        <div className="newpostheader">
-          <h4>Suggested post</h4>
-          <hr />
-          <a href="javascript:void(0)">
-            <img src="//i.imgur.com/5jInimY.jpg" />
-            <span className="name">First Last</span>
-          </a>
-          <p>
-            <a className="date" href="javascript:void(0)">
-              Sponsored
-            </a>
-            <a href="javascript:void(0)">
-              <i className="fa fa-globe" />
-            </a>
-          </p>
-          <div className="rightsideofpost">
-            <a className="follow" href="javascript:void(0)">
-              <i className="fa fa-star" />
-            </a>
-            <a className="personpostmenu" href="javascript:void(0)">
-              <i className="fa fa-caret-down" />
-            </a>
+          <div className="">
+            {file ? (
+              <>
+                <div className="previ" style={{ position: "relative" }}>
+                  <span onClick={() => setfile(null)}>x</span>
+                  <img alt={file} id="imgpreview" src={file} />
+                </div>
+                <progress
+                  className="imageupload__progress"
+                  value={progress}
+                  max="100"
+                />
+              </>
+            ) : null}
           </div>
-          <p />
-        </div>
-        <div className="newpost">
-          <div className="postcontent">
-            We lose 48 football fields of forest every minute. :-( By using "
-            <a href="http://ecosia.org">Ecosia.org</a>" for your web searches
-            you can help stop this trend. Let's plant some trees together!
-            <div className="tc">
-              <iframe
-                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fecosia%2Fvideos%2F10154359809121611%2F&show_text=0&width=400"
-                width={400}
-                height={400}
-                style={{ border: "none", overflow: "hidden" }}
-                scrolling="no"
-                frameBorder={0}
-                allowTransparency="true"
-                allowFullScreen="true"
+          <ul className="newpostfooter nav nav-tabs nav-justified">
+            <li className="file_input_wrap">
+              <label htmlFor="imageUpload" className="btn1 btn-large1">
+                Select file
+              </label>
+              <input
+                type="file"
+                name='"imageUpload"'
+                id="imageUpload"
+                onChange={handleChange}
+                className="hide"
               />
-            </div>
-          </div>
-        </div>
-        <ul className="newpostfooter nav nav-tabs nav-justified">
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-thumbs-up" />
-              <span>Like</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" title="Leave a comment">
-              <i className="fa fa-comment-o" />
-              <span>Comment</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="javascript:void(0)"
-              title="Send this to friends or post it to your timeline"
-            >
-              <i className="fa fa-share" />
-              <span>Share</span>
-            </a>
-          </li>
-        </ul>
-        <ul className="community-counter nav nav-tabs nav-justified">
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-thumbs-up" />
-              <span>1</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-comment-o" />
-              <span>3</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-share" />
-              <span>4</span>
-            </a>
-          </li>
-        </ul>
-        <div className="commentpost">
-          <div className="input-group">
-            <a href="javascript:void(0)">
-              <img src="//i.imgur.com/5jInimY.jpg" />
-            </a>
-            <textarea
-              className="form-control"
-              placeholder="Write a comment..."
-              defaultValue={""}
-            />
-            <div className="input-group-btn">
-              <a className="btn btn-default" href="javascript:void(0)">
+            </li>
+            <li>
+              <Link to="#">
                 <i className="fa fa-smile-o" />
-              </a>
-              <a className="btn btn-default" href="javascript:void(0)">
-                <i className="fa fa-picture-o" />
-              </a>
-              <a className="btn btn-default" href="javascript:void(0)">
-                <i className="fa fa-gift" />
-              </a>
-            </div>
-          </div>
-        </div>
+                <span>Feeling/Activity</span>
+              </Link>
+            </li>
+            <li>
+              {posting ? (
+                <ul id="loading">
+                  <li className="loadbar"></li>
+                  <li className="loadbar"></li>
+                  <li className="loadbar"></li>
+                </ul>
+              ) : (
+                <button type="submit" id="postIt">
+                  <i className="fas fa-paper-plane"></i>
+                </button>
+              )}
+            </li>
+          </ul>
+        </form>
       </div>
-      <div className="recentcontainer">
-        <div className="newpostheader">
-          <a href="javascript:void(0)">
-            <img src="//i.imgur.com/5jInimY.jpg" />
-            <span className="name">First Last</span>
-          </a>
-          <p>
-            <a className="date" href="javascript:void(0)">
-              44 mins
-            </a>
-            <a href="javascript:void(0)">
-              <i className="fa fa-globe" />
-            </a>
-          </p>
-          <div className="rightsideofpost">
-            <a className="follow" href="javascript:void(0)">
-              <i className="fa fa-star" />
-            </a>
-            <a className="personpostmenu" href="javascript:void(0)">
-              <i className="fa fa-caret-down" />
-            </a>
-          </div>
-          <p />
-        </div>
-        <div className="newpost">
-          <div className="postcontent">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate
-            sunt quasi in quam asperiores! Optio voluptate impedit eos ex nisi,
-            molestias facilis sint cupiditate, dolores veritatis cum? Enim vel,
-            qui!
-          </div>
-        </div>
-        <ul className="newpostfooter nav nav-tabs nav-justified">
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-thumbs-up" />
-              <span>Like</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" title="Leave a comment">
-              <i className="fa fa-comment-o" />
-              <span>Comment</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="javascript:void(0)"
-              title="Send this to friends or post it to your timeline"
-            >
-              <i className="fa fa-share" />
-              <span>Share</span>
-            </a>
-          </li>
-        </ul>
-        <ul className="community-counter nav nav-tabs nav-justified">
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-thumbs-up" />
-              <span>1</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-comment-o" />
-              <span>3</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i className="fa fa-share" />
-              <span>4</span>
-            </a>
-          </li>
-        </ul>
-        <div className="commentpost">
-          <div className="input-group">
-            <a href="javascript:void(0)">
-              <img src="//i.imgur.com/5jInimY.jpg" />
-            </a>
-            <textarea
-              className="form-control"
-              placeholder="Write a comment..."
-              defaultValue={""}
-            />
-            <div className="input-group-btn">
-              <a className="btn btn-default" href="javascript:void(0)">
-                <i className="fa fa-smile-o" />
-              </a>
-              <a className="btn btn-default" href="javascript:void(0)">
-                <i className="fa fa-picture-o" />
-              </a>
-              <a className="btn btn-default" href="javascript:void(0)">
-                <i className="fa fa-gift" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+
+      {allposts.map((post) => {
+        return <SinglePost key={post.postId} post={post} />;
+      })}
     </div>
   );
 };

@@ -11,6 +11,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./redux/store/store";
 
 
+
 ReactDOM.render(
   <BrowserRouter>
     <Provider store={store}>

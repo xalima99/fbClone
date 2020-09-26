@@ -1,22 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { signout } from "../redux/actions";
+import {Link} from 'react-router-dom';
+import {history} from '../App';
+
 
 const Navbar = () => {
-  const auth = useSelector((state) => state.auth.uid);
+  const auth = useSelector((state) => state.auth);
+
+
   const dispatch = useDispatch();
-  const onSignOut = () => {
-    dispatch(signout(auth));
+  const onSignOut =  async () => {
+    dispatch(signout(auth.uid))
+
   };
   return (
-    <div className="topbar">
-      <a className="logo" href="javascript:void(0)">
+    <div className="topbar" style={{zIndex:"900"}}>
+      <Link className="logo" to='/homepage'>
         <img
         style={{width: '30px'}}
           alt=""
           src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QAOwBeAJXJ9VaZAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QUcFAwZEBLpsAAAAO5JREFUSMdj2Hrw+v+///79pzb4++/f/60Hr/9n/Pvv338mRkYGWoB///8zMP7///8/Aw0BCyWaL99+wXDk7D2Gdx+/M3CwszDw8bAziAvxMfg5aVFuQe+Cgwzr91/FKodsARM5hu89cQen4eiALAs27LtC2zi4+eA1Cr8q2YnBzVqNgYWZiTo++PbzNwrf2UIFq+FkW4AO2NlYqBsHpACiM5pN/DSiDFzRGcUgIyFAOx9IiPLRLoj4eTgwIpuqFkgK85IfB/ji48jCrIFLRaMWjAQL/tGwSv73/z8D047DNxloYcm///8Zdhy+yQAAwrOldG/7uKoAAAAASUVORK5CYII="
         />
-      </a>
+      </Link>
       <div className="search-box">
         <div className="input-group">
           <input
@@ -32,35 +38,35 @@ const Navbar = () => {
       </div>
       <div className="right-group">
         <div className="link-group">
-          <a href="javascript:void(0)">
-            <img src="//i.imgur.com/5jInimY.jpg" />
-            Michael
-          </a>
+          <Link to={`/homepage/user/${auth.uid}`}>
+            <img src={auth.userImg ? auth.userImg : 'https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg'} />
+            {`${auth.FirstName} ${auth.LastName}`}
+          </Link>
         </div>
         <div className="link-group">
-          <a href="javascript:void(0)">Home</a>
+          <Link to="/homepage">Home</Link>
         </div>
         <div className="notification-group">
           <div className="link-group">
-            <a className="freqnotif" href="javascript:void(0)">
+            <Link className="freqnotif" to="#">
               <i className="fa fa-group" />
-            </a>
+            </Link>
           </div>
           <div className="link-group">
-            <a className="msgnotif" href="javascript:void(0)">
+            <Link className="msgnotif" to="#">
               <i className="fa fa-comment" />
-            </a>
+            </Link>
           </div>
           <div className="link-group">
-            <a className="notif" href="javascript:void(0)">
+            <Link className="notif" to="#">
               <i className="fa fa-globe" />
-            </a>
+            </Link>
           </div>
           <div className="link-group" onClick={() => onSignOut(auth)}>
           
-            <a className="helpguide" href="javascript:void(0)">
-            <i class="fas fa-sign-out-alt"></i>
-            </a>
+            <Link className="helpguide" to="#">
+            <i className="fas fa-sign-out-alt"></i>
+            </Link>
           </div>
         </div>
       </div>
