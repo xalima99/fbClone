@@ -139,85 +139,102 @@ const ProfileFeed = ({posts}) => {
           alert(e.message);
         },
         () => {
-          //success upload funciton
-          storage
-            .ref("images")
-            .child(image.name) //Now we go get the img url
-            .getDownloadURL()
-            .then((url) => {
-              //Now we post img Url inside DB
-              db.collection("allposts").add({
-                timestamp: timestamp,
-                caption: caption,
-                imageUrl: url,
-                username: `${auth.FirstName} ${auth.LastName}`,
-                uid: auth.uid,
-                fetchedImg: fetchedImg
-              })
-              .then((Current) => {
-                db.collection('allposts').doc(Current.id).update({
-                  postId:Current.id
-                })
-                dispatch({ type: "IMGPOSTED" });
-                setProgress(0);
-                setCaption("");
-                setImage(null);
-                setfile(null);
-                setposting(false);
-              });
-              // db.collection("users")
-              //   .doc(auth.uid)
-              //   .collection("posts")
-              //   .add({
-              //     timestamp: timestamp,
-              //     caption: caption,
-              //     imageUrl: url,
-              //     username: `${auth.FirstName} ${auth.LastName}`,
-              //     uid: auth.uid,
-              //   })
-              //   .then((post) => {
-              //     db.collection("allposts")
-              //       .doc(post.id)
-              //       .set({
-              //         timestamp: timestamp,
-              //         caption: caption,
-              //         imageUrl: url,
-              //         username: `${auth.FirstName} ${auth.LastName}`,
-              //         uid: auth.uid,
-              //         postId: post.id,
-              //       })
-              //       .then(() => {
-              //         dispatch({ type: "IMGPOSTED" });
-              //         setProgress(0);
-              //         setCaption("");
-              //         setImage(null);
-              //         setfile(null);
-              //         setposting(false);
-              //       });
-              //   })
-              //   .catch((e) => console.log(e));
+          db.collection("users")
+            .doc(auth.uid)
+            .get()
+            .then((e) => {
+              const hereitis = e.data().userImg;
+
+              storage
+                .ref("images")
+                .child(image.name) //Now we go get the img url
+                .getDownloadURL()
+                .then((url) => {
+                  //Now we post img Url inside DB
+                  db.collection("allposts")
+                    .add({
+                      timestamp: timestamp,
+                      caption: caption,
+                      imageUrl: url,
+                      username: `${auth.FirstName} ${auth.LastName}`,
+                      uid: auth.uid,
+                      userImg: hereitis,
+                    })
+                    .then((Current) => {
+                      db.collection("allposts").doc(Current.id).update({
+                        postId: Current.id,
+                      });
+                      dispatch({ type: "IMGPOSTED" });
+                      setProgress(0);
+                      setCaption("");
+                      setImage(null);
+                      setfile(null);
+                      setposting(false);
+                    });
+                  // db.collection("users")
+                  //   .doc(auth.uid)
+                  //   .collection("posts")
+                  //   .add({
+                  //     timestamp: timestamp,
+                  //     caption: caption,
+                  //     imageUrl: url,
+                  //     username: `${auth.FirstName} ${auth.LastName}`,
+                  //     uid: auth.uid,
+                  //   })
+                  //   .then((post) => {
+                  //     db.collection("allposts")
+                  //       .doc(post.id)
+                  //       .set({
+                  //         timestamp: timestamp,
+                  //         caption: caption,
+                  //         imageUrl: url,
+                  //         username: `${auth.FirstName} ${auth.LastName}`,
+                  //         uid: auth.uid,
+                  //         postId: post.id,
+                  //       })
+                  //       .then(() => {
+                  //         dispatch({ type: "IMGPOSTED" });
+                  //         setProgress(0);
+                  //         setCaption("");
+                  //         setImage(null);
+                  //         setfile(null);
+                  //         setposting(false);
+                  //       });
+                  //   })
+                  //   .catch((e) => console.log(e));
+                });
             });
+          //success upload funciton
         }
       );
     } else {
-      db.collection("allposts").add({
-        timestamp: timestamp,
-        caption: caption,
-        username: `${auth.FirstName} ${auth.LastName}`,
-        uid: auth.uid,
-        fetchedImg: fetchedImg
-      })
-      .then((ee) => {
-        db.collection('allposts').doc(ee.id).update({
-          postId: ee.id
-        })
-        dispatch({ type: "IMGPOSTED" });
-        setProgress(0);
-        setCaption("");
-        setImage(null);
-        setfile(null);
-        setposting(false);
-      });
+      db.collection("users")
+        .doc(auth.uid)
+        .get()
+        .then((e) => {
+          const hereitis = e.data().userImg;
+
+          db.collection("allposts")
+            .add({
+              timestamp: timestamp,
+              caption: caption,
+              username: `${auth.FirstName} ${auth.LastName}`,
+              uid: auth.uid,
+              userImg: hereitis,
+            })
+            .then((ee) => {
+              db.collection("allposts").doc(ee.id).update({
+                postId: ee.id,
+              });
+              dispatch({ type: "IMGPOSTED" });
+              setProgress(0);
+              setCaption("");
+              setImage(null);
+              setfile(null);
+              setposting(false);
+            });
+        });
+
       // db.collection("users")
       //   .doc(auth.uid)
       //   .collection("posts")

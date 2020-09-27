@@ -23,6 +23,7 @@ export const signIn = (user) => async (dispatch) => {
               uid: currentUser.user.uid,
               birthday: `${user.Day} ${user.Month} ${user.Year}`,
               Gender: user.Gender,
+              userImg: 'https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg'
             })
             .then(() => {
               const loggedInUser = {

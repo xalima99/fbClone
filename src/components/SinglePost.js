@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import db from "../redux/firebase/firebase";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SinglePost = ({ post }) => {
-  const [fetchedImg, setfetchedImg] = useState("");
+  // const [fetchedImg, setfetchedImg] = useState("");
   const [infosLoading, setinfosLoading] = useState(false);
   const userImg = useSelector((state) => state.auth.userImg);
   const uid = useSelector((state) => state.auth.uid);
-
-  useEffect(() => {
-    db.collection("profilImgs")
-      .doc(post.uid)
-      .get()
-      .then((snap) => {
-        setfetchedImg(snap?.data()?.profileImg);
-      });
-  }, [post.uid]);
+  const {id} = useParams()
+  // useEffect(() => {
+  //   db.collection("profilImgs")
+  //     .doc(post.uid)
+  //     .get()
+  //     .then((snap) => {
+  //       setfetchedImg(snap?.data()?.profileImg);
+  //     });
+  // }, [post.uid]);
 
 
   const deletePost = (id) => {
     db.collection('allposts').doc(id).delete()
     .then(() => {
+      
       toast.success("Post successfully deleted");
+      if(id){
+        window.location.reload()
+      }
     })
   }
 
@@ -58,9 +62,7 @@ const SinglePost = ({ post }) => {
               <img
                 alt="helloword"
                 src={
-                  fetchedImg
-                    ? fetchedImg
-                    : "https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg"
+                  post.userImg
                 }
                 style={{ ObjectFit: "cover", objectPosition: "center" }}
               />
