@@ -1,31 +1,30 @@
-import React from 'react';
-import {useSelector} from 'react-redux'
-import {Redirect} from 'react-router-dom'
-import Navbar from './Navbar';
-import LeftContent from './LeftContent';
-import FeedContent from './FeedContent';
-import ThirdCol from './ThirdCol';
-import RightContent from './RightContent';
+import React from "react";
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
+import Navbar from "./Navbar";
+import LeftContent from "./LeftContent";
+import FeedContent from "./FeedContent";
+import ThirdCol from "./ThirdCol";
+import RightContent from "./RightContent";
+import Layout from "./Layout";
 
 const Accueil = () => {
-    const auth = useSelector(state => state.auth)
+  const auth = useSelector((state) => state.auth);
 
-    if(!auth.isAuthed){
-    return <Redirect to={"/"} />
+  if (!auth.uid) {
+    return <Redirect to={"/"} />;
   }
 
-
-    return (
-        <div className="accueil">
-             <div>
-       <Navbar />
-       <LeftContent />
+  return (
+    <Layout>
+      <div className="accueil">
+        <LeftContent />
         <FeedContent />
         <ThirdCol />
         <RightContent />
       </div>
-        </div>
-    )
-}
+    </Layout>
+  );
+};
 
-export default Accueil
+export default Accueil;

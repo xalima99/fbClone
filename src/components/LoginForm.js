@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { logIn } from "../redux/actions";
-import ErrorAlert from "./ErrorAlert";
 import { useDispatch, useSelector } from "react-redux";
 import fblogo from "../assets/imgs/fblogo.png";
 import { ToastContainer, toast } from "react-toastify";
+import { Redirect } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 
 

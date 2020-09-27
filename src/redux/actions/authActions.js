@@ -33,7 +33,6 @@ export const signIn = (user) => async (dispatch) => {
                 birthday: `${user.Day} ${user.Month} ${user.Year}`,
                 Gender: user.Gender,
               };
-              console.log(loggedInUser);
               localStorage.setItem("user", JSON.stringify(loggedInUser.uid));
               dispatch({
                 type: authTypes.SIGN_IN_SUCCESS,
@@ -92,7 +91,7 @@ export const logIn = (user) => async (dispatch) => {
             type: authTypes.SIGN_IN_SUCCESS,
             payload: { user: loggedInUser },
           });
-          history.push("/homepage");
+          // history.push("/homepage");
         })
         .catch((e) => alert(e));
     })
@@ -115,10 +114,11 @@ export const signout = (uid) => async (dispatch) => {
     .then(() => {
       auth.signOut().then(function () {
         // Sign-out successful.
-
-        dispatch({ type: authTypes.LOGOUT_SUCESS });
-        localStorage.clear();
+ 
+        dispatch({ type: authTypes.LOGOUT_SUCCESS });
         history.push("/");
+        localStorage.clear();
+       
       });
     })
     .catch((error) => {
