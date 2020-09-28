@@ -213,7 +213,8 @@ const FeedContent = () => {
       </div>
 
       {allposts.map((post) => {
-        return <SinglePost key={Math.random()} post={post} />;
+        
+        return <SinglePost key={post.timestamp?.nanoseconds} post={post} />;
       })}
     </div>
   );

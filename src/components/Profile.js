@@ -69,11 +69,11 @@ const Profile = () => {
                       coverImg: url,
                     },
                   });
-                  window.setTimeout(() => {
-                    window.location.reload();
-                  }, 4000);
+                  // window.setTimeout(() => {
+                  //   window.location.reload();
+                  // }, 4000);
                 });
-              toast.success("Cover updated, page will reload in 5 seconds");
+              toast.success("Cover updated, page will reload in 5 seconds");    
               setProgress(0);
 
               setImage(null);

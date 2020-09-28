@@ -3,7 +3,6 @@ import { logIn } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import fblogo from "../assets/imgs/fblogo.png";
 import { ToastContainer, toast } from "react-toastify";
-import { Redirect } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 
 

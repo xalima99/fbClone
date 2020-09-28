@@ -3,7 +3,8 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import {useSelector} from 'react-redux'
 import {Redirect} from 'react-router-dom'
-import connecting from '../assets/imgs/connecting.png';
+import connecting from '../assets/imgs/fblogo.png';
+import MobiLog from './MobiLog'
 
 const Sub = () => {
     const auth = useSelector(state => state.auth)
@@ -46,38 +47,7 @@ const Sub = () => {
               </div>
             </a>
           </div>
-          <div className="mobmaindiv">
-            <div id="mobtextdiv">
-              <input
-                type="text"
-                className="mobtextbox mobtextbox1"
-                placeholder="Mobile number or email address"
-              />
-              <input
-                type="password"
-                className="mobtextbox mobtextbox2"
-                placeholder="Password"
-              />
-            </div>
-            <div className="mobloginbuttondiv">
-              <input
-                type="submit"
-                className="mobloginbutton"
-                defaultValue="Log In"
-              />
-            </div>
-            <div id="ordiv">
-              <span id="or">or</span>
-            </div>
-            <div id="mobcreatediv">
-              <button id="mobcreate">Create New Account</button>
-            </div>
-            <div className="mobforgotpw">
-              <a href="#">Forgotten password?</a>
-              <span>·</span>
-              <a href="#">Help Center</a>
-            </div>
-          </div>
+          <MobiLog />
           <div className="mobfooter">
             <div id="moblangs">
               <div className="item1">

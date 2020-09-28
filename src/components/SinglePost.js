@@ -62,7 +62,7 @@ const SinglePost = ({ post }) => {
   }, []);
 
   const onDislike = () => {
-    // setLiked(true);
+    setLiked(false);
     db.collection("users")
       .doc(auth.uid)
       .collection("Liked")
@@ -70,9 +70,9 @@ const SinglePost = ({ post }) => {
       .get()
       .then((data) => {
         let like = data.docs[0]?.id;
-        console.log(data);
+        console.log(like);
         db.collection("users")
-          .doc(auth.uid)
+          .doc(auth?.uid)
           .collection("Liked")
           .doc(like)
           .delete()
@@ -93,7 +93,7 @@ const SinglePost = ({ post }) => {
   };
 
   const onLike = () => {
-    // setLiked(false);
+    setLiked(true);
 
     db.collection("users")
       .doc(auth.uid)
@@ -293,7 +293,7 @@ const SinglePost = ({ post }) => {
         )}
         <li>
           <span to="#" title="Leave a comment" onClick={loadComments} style={{ cursor: "pointer" }}>
-            <span>Comment</span>
+            <span>{opened ? 'Hide Comments' : 'Show Comments'}</span>
           </span>
         </li>
         <li>
