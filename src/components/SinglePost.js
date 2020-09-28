@@ -155,7 +155,7 @@ const SinglePost = ({ post }) => {
         .doc(post?.postId)
         .collection("comments")
         .onSnapshot((comments) => {
-          if (comments) {
+          if (comments && comments.size != count) {
             setcount(comments?.size);
           }
         });
@@ -185,7 +185,6 @@ const SinglePost = ({ post }) => {
   return (
     <div className="recentcontainer">
       <ToastContainer />
-
       <div className="newpostheader">
         <Link to={`/homepage/user/${post.uid}`}>
           <img
@@ -259,22 +258,42 @@ const SinglePost = ({ post }) => {
       </div>
       <ul className="newpostfooter nav nav-tabs nav-justified">
         <li>
-          {liked ? (
-            <i
-              className="fas fa-heart"
-              onClick={onDislike}
-              style={{ color: "rgb(227, 38, 54)" }}
-            ></i>
-          ) : (
-            <i className="far fa-heart" onClick={onLike}></i>
-          )}
+          <i className="fas fa-heart" style={{ color: "rgb(227, 38, 54)" }}></i>
 
           <span className="ml-2">{post.Likes}</span>
         </li>
         <li>
-          <span to="#" title="Leave a comment" onClick={loadComments}>
-            <i className="fa fa-comment-o mr-2" />
+          <span to="#" title="Leave a comment" >
+            <i className="fas fa-comments mr-2" style={{color: '#3b5e95'}} />
             <span>{count} Comments</span>
+          </span>
+        </li>
+        <li>
+          <Link to="#" title="Send this to friends or post it to your timeline">
+            <i className="fa fa-share" />
+            <span>Share</span>
+          </Link>
+        </li>
+      </ul>{" "}
+      <ul className="newpostfooter nav nav-tabs nav-justified">
+        {liked ? (
+          <li style={{ cursor: "pointer" }} onClick={onDislike}>
+            <>
+              <i className="fas fa-thumbs-up" style={{ color: "#3b5e95" }}></i>{" "}
+              <span className="ml-2" style={{ color: "#3b5e95" }}>
+                Liked
+              </span>
+            </>
+          </li>
+        ) : (
+          <li onClick={onLike} style={{ cursor: "pointer" }}>
+            <i className="far fa-thumbs-up"></i>
+            <span className="ml-2">Like</span>
+          </li>
+        )}
+        <li>
+          <span to="#" title="Leave a comment" onClick={loadComments} style={{ cursor: "pointer" }}>
+            <span>Comment</span>
           </span>
         </li>
         <li>
