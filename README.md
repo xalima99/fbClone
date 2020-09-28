@@ -28,3 +28,12 @@ React
 Redux
 Firebase
 Bootstrap ans Custom Css (UI)
+
+
+Installation:
+git clone https://github.com/xalima99/fbClone.git
+
+Provide your firebase infos folder redux/firebase/
+create a Firebase.js file and initialize your firebase app using your keys. Then export db as default, and auth, timestamp and storage as named exports.
+
+Run : npm start
