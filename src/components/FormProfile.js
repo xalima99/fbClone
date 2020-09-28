@@ -35,7 +35,7 @@ const FormProfile = ({ profileInfos }) => {
 
   const handleUploadprofile = (e) => {
     e.preventDefault();
-    
+
     if (image) {
       const uploadTask = storage.ref(`/images/${image.name}`).put(image);
       uploadTask.on(
@@ -66,39 +66,40 @@ const FormProfile = ({ profileInfos }) => {
                   FirstName: firstName,
                   LastName: lastName,
                 })
-                .then(() => {
+                .then(async () => {
                   // db.collection('profilImgs').doc(id).set({
                   //   profileImg: url
                   // })
-                  db.collection("allposts")
+                  await db
+                    .collection("allposts")
                     .where("uid", "==", id)
                     .get()
                     .then((snapshots) => {
-                      if (snapshots.size > 0) {
-                        snapshots.forEach((post) => {
+                      if (snapshots) {
+                        snapshots.forEach(async (post) => {
                           console.log(post.data().caption);
                           db.collection("allposts").doc(post.id).update({
                             userImg: url,
                             FirstName: firstName,
                             LastName: lastName,
                           });
-                        });
+                        })
                       }
-                    })
-                    .then(() => {
-                      dispatch({
-                        type: "UPDATE",
-                        payload: {
-                          userImg: url,
-                          FirstName: firstName,
-                          LastName: lastName,
-                        },
-                      });
-                      setProgress(0);
-                      window.location.reload();
                     });
+                  dispatch({
+                    type: "UPDATE",
+                    payload: {
+                      userImg: url,
+                      FirstName: firstName,
+                      LastName: lastName,
+                    },
+                  });
+                  setProgress(0);
+                  window.setTimeout(() => {
+                    window.location.reload();
+                  }, 4000);
                 });
-              toast.success("Profile successfully updated");
+              toast.success("Update Successful : Page will reload in 5 seconds");
             });
         }
       );
@@ -132,7 +133,7 @@ const FormProfile = ({ profileInfos }) => {
             },
           });
         });
-      toast.success("Profile successfully updated");
+      toast.success("Update Successful");
     }
   };
 
@@ -145,7 +146,7 @@ const FormProfile = ({ profileInfos }) => {
           <p className="text-center text-muted">*Upload an profile image</p>
 
           <form className="px-4" onSubmit={handleUploadprofile}>
-            <div className="form-group text-center">
+            <div className="form-group text-center imga">
               {image ? (
                 <progress
                   className="imageupload__progress"

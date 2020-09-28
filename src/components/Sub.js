@@ -3,6 +3,7 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import {useSelector} from 'react-redux'
 import {Redirect} from 'react-router-dom'
+import connecting from '../assets/imgs/connecting.png';
 
 const Sub = () => {
     const auth = useSelector(state => state.auth)
@@ -25,7 +26,7 @@ const Sub = () => {
                   life.
                 </div>
                 <div className="welcomepic">
-                  <img src="images/connecting.png" alt="welcome" />
+                  <img src={connecting} alt="welcome" />
                 </div>
               </div>
               <SignupForm />

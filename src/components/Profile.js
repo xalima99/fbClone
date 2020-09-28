@@ -14,8 +14,8 @@ const Profile = () => {
   const { id } = useParams();
   const [profileInfos, setprofileInfoss] = useState([]);
   const [infosLoading, setinfosLoading] = useState(true);
-  const coverImg = useSelector(state => state.auth.coverImg)
-  const authuid = useSelector(state => state.auth.uid)
+  const coverImg = useSelector((state) => state.auth.coverImg);
+  const authuid = useSelector((state) => state.auth.uid);
   const [ownPost, setownPost] = useState([]);
   const [image, setImage] = useState("");
   const [progress, setProgress] = useState(0);
@@ -30,7 +30,6 @@ const Profile = () => {
       setImage(e.target.files[0]);
     }
   };
-
 
   const handleUpload = (e) => {
     e.preventDefault();
@@ -70,12 +69,14 @@ const Profile = () => {
                       coverImg: url,
                     },
                   });
+                  window.setTimeout(() => {
+                    window.location.reload();
+                  }, 4000);
                 });
-              toast.success("Cover successfully updated");
+              toast.success("Cover updated, page will reload in 5 seconds");
               setProgress(0);
-              
-                setImage(null);
-               
+
+              setImage(null);
             });
         }
       );
@@ -89,7 +90,6 @@ const Profile = () => {
       .then((doc) => {
         if (doc.exists) {
           setprofileInfoss(doc.data());
-
         }
 
         db.collection("allposts")
@@ -108,7 +108,6 @@ const Profile = () => {
         setinfosLoading(false);
       });
   }, [id]);
-        
 
   return (
     <div>
@@ -143,7 +142,7 @@ const Profile = () => {
                     ? `url(${profileInfos.coverImg}) center center fixed`
                     : `url(${cover})`,
                   backgroundSize: "cover",
-                  objectFit: "cover"
+                  objectFit: "cover",
                 }}
               >
                 <div className="container">
@@ -169,34 +168,42 @@ const Profile = () => {
                   </p>
                 </div>
                 {authuid === id ? (
-                <form>
-                  <div className="form-group text-center">
-                    {image ? (
-                      <progress
-                        className="imageupload__progress"
-                        value={progress}
-                        max="100"
+                  <form>
+                    <div className="form-group text-center imga">
+                      {image ? (
+                        <progress
+                          className="imageupload__progress"
+                          value={progress}
+                          max="100"
+                        />
+                      ) : null}
+                      <label
+                        htmlFor="imageUpload"
+                        className="btn btn-info btn-large"
+                      >
+                        UPDATE COVER PICTURE
+                      </label>
+                      <input
+                        type="file"
+                        name='"imageUpload"'
+                        id="imageUpload"
+                        onChange={handleChange}
+                        className="hide"
                       />
-                    ) : null}
-                    <label htmlFor="imageUpload" className="btn btn-info btn-large">
-                      UPDATE COVER PICTURE
-                    </label>
-                    <input
-                      type="file"
-                      name='"imageUpload"'
-                      id="imageUpload"
-                      onChange={handleChange}
-                      className="hide"
-                    />
-                    {image ? (
-                      <div className="">
-                        <button className="btn btn-sm btn-success" type="submit" onClick={handleUpload}>
-                          ENVOYER
-                        </button>
-                      </div>
-                    ) : null}
-                  </div>
-                </form>) : null }
+                      {image ? (
+                        <div className="">
+                          <button
+                            className="btn btn-sm btn-success"
+                            type="submit"
+                            onClick={handleUpload}
+                          >
+                            ENVOYER
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
+                  </form>
+                ) : null}
               </div>
             </div>
             <div className="row">
@@ -206,16 +213,45 @@ const Profile = () => {
                   <ProfileFeed posts={ownPost} />
                 </div>
               </div>
-
-              {
-                authuid === id ? (
-                   <div className="col-md-4">
-                <FormProfile profileInfos={profileInfos} />
+              <div className="col-md-4">
+                {authuid === id ? (
+                  <FormProfile profileInfos={profileInfos} />
+                ) : null}
+                <div className="jumbotron mx-3">
+                  <div className="text-center mb-4 pb-4">
+                    <h4>{profileInfos?.FirstName}'s Infos</h4>
+                  </div>
+                  <p>
+                    <strong>Status :</strong>{" "}
+                    {profileInfos?.isOnline ? (
+                      <>
+                        <i
+                          class="fas fa-globe-europe"
+                          style={{ color: "green" }}
+                        ></i>{" "}
+                        Online
+                      </>
+                    ) : (
+                      <>
+                        <i
+                          class="fas fa-globe-europe"
+                          style={{ color: "red" }}
+                        ></i>{" "}
+                        Offline
+                      </>
+                    )}
+                  </p>
+                  <p>
+                    <strong>Email :</strong> {profileInfos?.email}
+                  </p>
+                  <p>
+                    <strong>BirthDay :</strong> {profileInfos?.birthday}
+                  </p>
+                  <p>
+                    <strong>Gender :</strong> {profileInfos?.Gender}
+                  </p>
+                </div>
               </div>
-                ) : null
-
-              }
-             
             </div>
           </>
         )}

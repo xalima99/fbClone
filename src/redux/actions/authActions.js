@@ -23,7 +23,7 @@ export const signIn = (user) => async (dispatch) => {
               uid: currentUser.user.uid,
               birthday: `${user.Day} ${user.Month} ${user.Year}`,
               Gender: user.Gender,
-              userImg: 'https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg'
+              userImg:"https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg"
             })
             .then(() => {
               const loggedInUser = {
@@ -33,6 +33,7 @@ export const signIn = (user) => async (dispatch) => {
                 isOnline: true,
                 birthday: `${user.Day} ${user.Month} ${user.Year}`,
                 Gender: user.Gender,
+                userImg:"https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg"
               };
               localStorage.setItem("user", JSON.stringify(loggedInUser.uid));
               dispatch({
@@ -65,8 +66,8 @@ export const signIn = (user) => async (dispatch) => {
 
 export const logIn = (user) => async (dispatch) => {
   dispatch({
-    type: 'LOGIN_REQUEST'
-  })
+    type: "LOGIN_REQUEST",
+  });
   auth
     .signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
@@ -76,22 +77,27 @@ export const logIn = (user) => async (dispatch) => {
           isOnline: true,
         })
         .then(() => {
-          console.log(data);
-          const name = data.user.displayName.split(" ");
-          const [firstName, lastName] = name;
-          const loggedInUser = {
-            FirstName: firstName,
-            LastName: lastName,
-            uid: data.user.uid,
-            email: data.user.email,
-            isOnline: true,
-          };
-          console.log(loggedInUser);
-          localStorage.setItem("user", JSON.stringify(loggedInUser));
-          dispatch({
-            type: authTypes.SIGN_IN_SUCCESS,
-            payload: { user: loggedInUser },
-          });
+          db.collection("users")
+            .doc(data.user.uid)
+            .get()
+            .then((current) => {
+              const name = data.user.displayName.split(" ");
+              const [firstName, lastName] = name;
+              const loggedInUser = {
+                FirstName: firstName,
+                LastName: lastName,
+                uid: data.user.uid,
+                email: data.user.email,
+                isOnline: true,
+                userImg: current.data().userImg,
+              };
+              localStorage.setItem("user", JSON.stringify(loggedInUser));
+              dispatch({
+                type: authTypes.SIGN_IN_SUCCESS,
+                payload: { user: loggedInUser },
+              });
+            });
+
           // history.push("/homepage");
         })
         .catch((e) => alert(e));
@@ -115,11 +121,10 @@ export const signout = (uid) => async (dispatch) => {
     .then(() => {
       auth.signOut().then(function () {
         // Sign-out successful.
- 
+
         dispatch({ type: authTypes.LOGOUT_SUCCESS });
         history.push("/");
         localStorage.clear();
-       
       });
     })
     .catch((error) => {

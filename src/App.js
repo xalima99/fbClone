@@ -7,6 +7,7 @@ import {createBrowserHistory} from 'history'
 import Accueil from './components/Accueil';
 import PageNotFound from './components/PageNotFound';
 import Profile from './components/Profile';
+import ModalEdit from './components/Modal'
 
 export const history = createBrowserHistory()
 
@@ -15,6 +16,7 @@ function App() {
   return (
     <div className="App">
       <Router history={history}>
+      <ModalEdit />
         <Switch>
           <Route path="/" exact component={Sub} />
           <PrivateRoute path="/homepage" exact component={Accueil} />
