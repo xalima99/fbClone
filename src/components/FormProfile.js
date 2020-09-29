@@ -80,8 +80,8 @@ const FormProfile = ({ profileInfos }) => {
                           console.log(post.data().caption);
                           db.collection("allposts").doc(post.id).update({
                             userImg: url,
-                            FirstName: firstName,
-                            LastName: lastName,
+                            FirstName:firstName,
+                            LastName: firstName,
                           });
                         })
                       }
@@ -91,7 +91,7 @@ const FormProfile = ({ profileInfos }) => {
                     payload: {
                       userImg: url,
                       FirstName: firstName,
-                      LastName: lastName,
+                      LastName: firstName,
                     },
                   });
                   setProgress(0);

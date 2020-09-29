@@ -14,3 +14,19 @@ export const hideModal = () => {
     type: "HIDE",
   };
 };
+
+
+export const showShareModal = (id) => async (dispatch) => {
+  db.collection("allposts")
+    .doc(id)
+    .get()
+    .then((post) => {
+      dispatch({ type: "SHOW_SHARE", payload: post.data()});
+    });
+};
+
+export const hideShareModal = () => {
+  return {
+    type: "HIDE_SHARE",
+  };
+};

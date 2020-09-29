@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import Layout from "./Layout";
 import { useParams } from "react-router-dom";
 import db, { storage, timestamp } from "../redux/firebase/firebase";
-import SinglePost from "./SinglePost";
-import FeedContent from "./FeedContent";
 import ProfileFeed from "./ProfileFeed";
 import FormProfile from "./FormProfile";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { addFriend, unfriend } from "../redux/actions";
 
 const Profile = () => {
   const { id } = useParams();
@@ -16,10 +15,14 @@ const Profile = () => {
   const [infosLoading, setinfosLoading] = useState(true);
   const coverImg = useSelector((state) => state.auth.coverImg);
   const authuid = useSelector((state) => state.auth.uid);
+  const auth = useSelector((state) => state.auth);
   const [ownPost, setownPost] = useState([]);
   const [image, setImage] = useState("");
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
+  const [send, setsend] = useState(false);
+  const [alreadyFriend, setalreadyFriend] = useState(null);
+
   const [cover, setcover] = useState(
     "https://tokystorage.s3.amazonaws.com/images/default-cover.png"
   );
@@ -73,7 +76,7 @@ const Profile = () => {
                   //   window.location.reload();
                   // }, 4000);
                 });
-              toast.success("Cover updated, page will reload in 5 seconds");    
+              toast.success("Cover updated, page will reload in 5 seconds");
               setProgress(0);
 
               setImage(null);
@@ -103,11 +106,54 @@ const Profile = () => {
               }
             });
             setownPost(own.map((el) => el));
+          })
+          .then(() => {
+            if (id !== authuid) {
+          
+              db.collection("users")
+                .doc(authuid)
+                .collection("friends")
+                .doc(id)
+                .get()
+                .then((item) => {
+                  if (item.exists) {
+                   
+                    setalreadyFriend(true);
+                  } else {
+              
+                    setalreadyFriend(false);
+                  }
+                 
+                });
+            }
           });
-
-        setinfosLoading(false);
+          setTimeout(() => {
+            setinfosLoading(false)
+          }, 800);
+        
       });
   }, [id]);
+
+  const addHim = () => {
+    dispatch(
+      addFriend({
+        source: authuid,
+        target: id,
+        name: `${auth.FirstName} ${auth.LastName}`,
+        userImg: auth.userImg,
+      })
+    );
+    setsend(true);
+  };
+
+  const onUnfriend = () => {
+    dispatch(
+      unfriend({
+        source: authuid,
+        target: id
+      })
+    );
+  }
 
   return (
     <div>
@@ -166,6 +212,33 @@ const Profile = () => {
                     Member since :{" "}
                     {new Date(profileInfos.createdAt?.toDate()).toUTCString()}
                   </p>
+                  {id !== authuid ? (
+                    alreadyFriend ? (
+                      <button style={{cursor:"pointer"}}
+                        type="button"
+                        className="btn btn-danger btn-sm mt-2"
+                        onClick={onUnfriend}
+                      >
+                       Unfriend
+                      </button>
+                    ) : send ? (
+                      <button
+                        type="button"
+                        className="btn btn-success btn-lg mt-2"
+                        disabled
+                      >
+                        REQUEST SENT
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-success btn-lg mt-2"
+                        onClick={addHim}
+                      >
+                        <i class="fas fa-user-plus"></i> ADD FRIEND
+                      </button>
+                    )
+                  ) : null}
                 </div>
                 {authuid === id ? (
                   <form>

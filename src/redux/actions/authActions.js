@@ -23,7 +23,8 @@ export const signIn = (user) => async (dispatch) => {
               uid: currentUser.user.uid,
               birthday: `${user.Day} ${user.Month} ${user.Year}`,
               Gender: user.Gender,
-              userImg:"https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg"
+              userImg:
+                "https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg",
             })
             .then(() => {
               const loggedInUser = {
@@ -31,9 +32,11 @@ export const signIn = (user) => async (dispatch) => {
                 uid: currentUser.user.uid,
                 timestamp: timestamp,
                 isOnline: true,
+                inInternet: true,
                 birthday: `${user.Day} ${user.Month} ${user.Year}`,
                 Gender: user.Gender,
-                userImg:"https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg"
+                userImg:
+                  "https://pbs.twimg.com/profile_images/831173492968140804/43M7c5j_.jpg",
               };
               localStorage.setItem("user", JSON.stringify(loggedInUser.uid));
               dispatch({
@@ -81,21 +84,25 @@ export const logIn = (user) => async (dispatch) => {
             .doc(data.user.uid)
             .get()
             .then((current) => {
-              const name = data.user.displayName.split(" ");
-              const [firstName, lastName] = name;
-              const loggedInUser = {
-                FirstName: firstName,
-                LastName: lastName,
-                uid: data.user.uid,
-                email: data.user.email,
-                isOnline: true,
-                userImg: current.data().userImg,
-              };
-              localStorage.setItem("user", JSON.stringify(loggedInUser));
-              dispatch({
-                type: authTypes.SIGN_IN_SUCCESS,
-                payload: { user: loggedInUser },
-              });
+              db.collection("users")
+                .doc(data.user.uid)
+                .get()
+                .then((doc) => {
+                  const loggedInUser = {
+                    FirstName: doc.data().FirstName,
+                    inInternet: true,
+                    LastName: doc.data().LastName,
+                    uid: data.user.uid,
+                    email: data.user.email,
+                    isOnline: true,
+                    userImg: current.data().userImg,
+                  };
+                  localStorage.setItem("user", JSON.stringify(loggedInUser));
+                  dispatch({
+                    type: authTypes.SIGN_IN_SUCCESS,
+                    payload: { user: loggedInUser },
+                  });
+                });
             });
 
           // history.push("/homepage");

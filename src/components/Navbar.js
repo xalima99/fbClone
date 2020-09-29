@@ -47,21 +47,6 @@ const Navbar = () => {
           <Link to="/homepage">Home</Link>
         </div>
         <div className="notification-group">
-          <div className="link-group">
-            <Link className="freqnotif" to="#">
-              <i className="fa fa-group" />
-            </Link>
-          </div>
-          <div className="link-group">
-            <Link className="msgnotif" to="#">
-              <i className="fa fa-comment" />
-            </Link>
-          </div>
-          <div className="link-group">
-            <Link className="notif" to="#">
-              <i className="fa fa-globe" />
-            </Link>
-          </div>
           <div className="link-group" onClick={() => onSignOut(auth)}>
           
             <Link className="helpguide" to="#">

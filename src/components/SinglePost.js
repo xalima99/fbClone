@@ -20,6 +20,8 @@ const SinglePost = ({ post }) => {
   const [count, setcount] = useState(0);
   const [Likes, setLikes] = useState(10);
   const [liked, setLiked] = useState(null);
+  const [postLikes, setpostLikes] = useState(post.Likes);
+ 
   let unsubscribe;
   let unsub;
 
@@ -62,6 +64,7 @@ const SinglePost = ({ post }) => {
   }, []);
 
   const onDislike = () => {
+    setpostLikes(prevprops => prevprops - 1)
     setLiked(false);
     db.collection("users")
       .doc(auth.uid)
@@ -89,10 +92,13 @@ const SinglePost = ({ post }) => {
                   });
               });
           });
-      });
+      }).catch( e => {
+        setpostLikes(prevprops => prevprops + 1)
+      })
   };
 
   const onLike = () => {
+    setpostLikes(prevprops => prevprops + 1)
     setLiked(true);
 
     db.collection("users")
@@ -113,7 +119,9 @@ const SinglePost = ({ post }) => {
                 Likes: numberlikes + 1,
               });
           });
-      });
+      }).catch(e => {
+        setpostLikes(prevprops => prevprops - 1)
+      })
   };
 
   const ShowHide = () => {
@@ -145,6 +153,7 @@ const SinglePost = ({ post }) => {
   useEffect(() => {
     return () => {
       if (unsubscribe) return unsubscribe();
+      if(unsub) return () => unsub();
     };
   }, []);
 
@@ -160,7 +169,7 @@ const SinglePost = ({ post }) => {
           }
         });
     }
-    return () => unsub();
+   
   }, []);
 
   const postComment = (e) => {
@@ -260,7 +269,7 @@ const SinglePost = ({ post }) => {
         <li>
           <i className="fas fa-heart" style={{ color: "rgb(227, 38, 54)" }}></i>
 
-          <span className="ml-2">{post.Likes}</span>
+          <span className="ml-2">{postLikes}</span>
         </li>
         <li>
           <span to="#" title="Leave a comment" >
@@ -271,7 +280,7 @@ const SinglePost = ({ post }) => {
         <li>
           <Link to="#" title="Send this to friends or post it to your timeline">
             <i className="fa fa-share" />
-            <span>Share</span>
+            <span>0 Share</span>
           </Link>
         </li>
       </ul>{" "}
@@ -298,7 +307,6 @@ const SinglePost = ({ post }) => {
         </li>
         <li>
           <Link to="#" title="Send this to friends or post it to your timeline">
-            <i className="fa fa-share" />
             <span>Share</span>
           </Link>
         </li>
