@@ -12,7 +12,7 @@ Profile management (Change Infos, profile and cover picture) --
 Real-time news feed --
 Sending / accepting / canceling friend requests --
 Instant Messaging (with your friend) --
-Notifications for new friend request. --
+Notifications on Homepage for new friend request. --
 Check if user if offline, if true, will alert user and for listen for when user is back online to refresh App.
 
 Future implementations:
