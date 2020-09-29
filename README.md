@@ -2,17 +2,17 @@ This project (NOMAD) is a minimal implementation of a social networking app that
 
 It explores functionalities like:
 
-Create new account
-Writing posts (text and image only)
-commenting posts (text only)
-Liking posts
-User authentication
-User authorization for posts and comments
-Profile management (Change Infos, profile and cover picture)
-Real-time news feed
-Sending / accepting / canceling friend requests
-Instant Messaging (with your friend)
-Notifications for new friend request.
+Create new account --
+Writing posts (text and image only) --
+commenting posts (text only) --
+Liking posts --
+User authentication --
+User authorization for posts and comments --
+Profile management (Change Infos, profile and cover picture) --
+Real-time news feed --
+Sending / accepting / canceling friend requests --
+Instant Messaging (with your friend) --
+Notifications for new friend request. --
 Check if user if offline, if true, will alert user and for listen for when user is back online to refresh App.
 
 Future implementations:
