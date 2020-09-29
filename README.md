@@ -34,6 +34,6 @@ Bootstrap ans Custom Css (UI)
 Installation:
 git clone https://github.com/xalima99/fbClone.git
 
-Provide your firebase infos in in initializeApp function the firebase file into source folder redux/firebase/firebase.js
+Provide your firebase infos in in firebaseConfig onject the firebase file into source folder redux/firebase/firebase.js
 
 Run : npm start, Application will run in port 3000
