@@ -10,15 +10,16 @@ User authentication
 User authorization for posts and comments
 Profile management (Change Infos, profile and cover picture)
 Real-time news feed
-Sharing of posts
+Sending / accepting / canceling friend requests
+Instant Messaging (with your friend)
+Notifications for new friend request.
+Check if user if offline, if true, will alert user and for listen for when user is back online to refresh App.
 
 Future implementations:
 
-Sending / accepting / canceling friend requests
-Notifications for new friend request.
+
 Profile management is minimal but will be extended
 Real-time notifications - from new posts, friend request and ads
-Instant Messaging
 Support for multimedia content - videos and more
 
 
@@ -33,7 +34,6 @@ Bootstrap ans Custom Css (UI)
 Installation:
 git clone https://github.com/xalima99/fbClone.git
 
-Provide your firebase infos folder redux/firebase/
-create a Firebase.js file and initialize your firebase app using your keys. Then export db as default, and auth, timestamp and storage as named exports.
+Provide your firebase infos in in initializeApp function the firebase file into source folder redux/firebase/firebase.js
 
-Run : npm start
+Run : npm start, Application will run in port 3000
