@@ -201,7 +201,7 @@ const SinglePost = ({ post }) => {
             src={post.userImg}
             style={{ ObjectFit: "cover", objectPosition: "center" }}
           />
-          <span className="name">
+          <span className="name postnamee">
             {post.FirstName
               ? `${post.FirstName} ${post.LastName}`
               : post.username}
@@ -277,19 +277,13 @@ const SinglePost = ({ post }) => {
             <span>{count} Comments</span>
           </span>
         </li>
-        <li>
-          <Link to="#" title="Send this to friends or post it to your timeline">
-            <i className="fa fa-share" />
-            <span>0 Share</span>
-          </Link>
-        </li>
       </ul>{" "}
       <ul className="newpostfooter nav nav-tabs nav-justified">
         {liked ? (
           <li style={{ cursor: "pointer" }} onClick={onDislike}>
             <>
-              <i className="fas fa-thumbs-up" style={{ color: "#3b5e95" }}></i>{" "}
-              <span className="ml-2" style={{ color: "#3b5e95" }}>
+              <i className="fas fa-thumbs-up" style={{ color: "#8c396e" }}></i>{" "}
+              <span className="ml-2" style={{ color: "#8c396e" }}>
                 Liked
               </span>
             </>
@@ -305,11 +299,7 @@ const SinglePost = ({ post }) => {
             <span>{opened ? 'Hide Comments' : 'Show Comments'}</span>
           </span>
         </li>
-        <li>
-          <Link to="#" title="Send this to friends or post it to your timeline">
-            <span>Share</span>
-          </Link>
-        </li>
+
       </ul>
       <ul className="commentlist">
         {/* <p className="commentsCounter" onClick={loadComments}>

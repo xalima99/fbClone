@@ -203,7 +203,7 @@ const FeedContent = () => {
                   <li className="loadbar"></li>
                 </ul>
               ) : (
-                <button type="submit" id="postIt">
+                <button type="submit" id="postIt" style={{color:"#8c396e"}}>
                   <i className="fas fa-paper-plane"></i>
                 </button>
               )}

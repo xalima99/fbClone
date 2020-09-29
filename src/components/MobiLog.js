@@ -61,25 +61,16 @@ const MobiLog = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div className="mobloginbuttondiv">
+        <div className="mobloginbuttondiv" >
           <input
+          style={{cursor:"pointer"}}
             type="submit"
-            className="mobloginbutton"
+            id="mobcreate"
             defaultValue="Log In"
           />
         </div>
       </form>
-      <div id="ordiv">
-        <span id="or">or</span>
-      </div>
-      <div id="mobcreatediv">
-        <button id="mobcreate">Create New Account</button>
-      </div>
-      <div className="mobforgotpw">
-        <a href="#">Forgotten password?</a>
-        <span>·</span>
-        <a href="#">Help Center</a>
-      </div>
+
       <ToastContainer />
     </div>
   );

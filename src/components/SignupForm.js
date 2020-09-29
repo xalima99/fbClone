@@ -349,10 +349,6 @@ const SignupForm = () => {
                 Sign Up
               </button>
             </div>
-            <div id="createpage">
-              <Link to="#">Create a Page</Link> for a celebrity, band or
-              business.
-            </div>
           </div>
         </div>
       </form>

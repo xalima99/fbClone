@@ -3,7 +3,7 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import {useSelector} from 'react-redux'
 import {Redirect} from 'react-router-dom'
-import connecting from '../assets/imgs/fblogo.png';
+import connecting from '../assets/imgs/homelogo.png';
 import MobiLog from './MobiLog'
 
 const Sub = () => {
@@ -23,8 +23,8 @@ const Sub = () => {
             <div className="mainsubdiv">
               <div className="welcome">
                 <div className="welcometext">
-                  Facebook helps you connect and share with the people in your
-                  life.
+                  NOMAD is a small clone of Facebook. Made by Amadou Fall.
+                  Tech Stack : React, Redux, Firebase. <a href=" https://github.com/xalima99/fbClone">Github</a>
                 </div>
                 <div className="welcomepic">
                   <img src={connecting} alt="welcome" />
@@ -37,15 +37,9 @@ const Sub = () => {
         {/*Code for Mobile Screen*/}
         <div className="mobile">
           <div className="mobheader">
-            <img alt="welcome" src="images/fblogo.png" className="mobfblogo" />
+           
           </div>
           <div id="mobapplink" className="clearfix">
-            <a href="#">
-              <img alt="welcome" src="images/fbandroid.png" id="mobandroidpic" />
-              <div id="getfbandroid">
-                Get Facebook for Android and browse faster.
-              </div>
-            </a>
           </div>
           <MobiLog />
           <div className="mobfooter">
@@ -90,22 +84,11 @@ const Sub = () => {
                   target="_blank"
                   id="mobcopyrightfblink"
                 >
-                  Facebook
+                  Nomad
                 </a>{" "}
-                ©2019
+                ©2020
               </span>
               <br />
-              <span id="mobdisclaimer">
-                UI cloned for educational purposes by{" "}
-                <a
-                  href="https://www.linkedin.com/in/pranavks/"
-                  target="_blank"
-                  id="mobpranavks"
-                >
-                  Pranav K S &nbsp;
-                  <i className="fa fa-linkedin-square" />
-                </a>
-              </span>
             </div>
           </div>
         </div>

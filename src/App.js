@@ -8,6 +8,7 @@ import Accueil from './components/Accueil';
 import PageNotFound from './components/PageNotFound';
 import Profile from './components/Profile';
 import ModalEdit from './components/Modal'
+import Messenger from './components/Messenger'
 import {useDispatch} from 'react-redux';
 export const history = createBrowserHistory()
 
@@ -36,6 +37,7 @@ useEffect(() => {
         <Switch>
           <Route path="/" exact component={Sub} />
           <PrivateRoute path="/homepage" exact component={Accueil} />
+          <PrivateRoute path="/messenger"  component={Messenger} />
           <Route path="/homepage/user/:id" exact component={Profile} />
           <Route component={PageNotFound}></Route>
         </Switch>

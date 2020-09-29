@@ -75,7 +75,7 @@ const RightContent = () => {
         {
           friends.map(friend => {
             return (
-              <Afriend friend={friend} key={friend.id} />
+              <Afriend friend={friend} key={friend.id} authuid={authuid} />
             )
           })
         }
