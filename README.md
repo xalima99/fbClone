@@ -1,4 +1,4 @@
-This project is a minimal implementation of a social networking app that clones the core features of facebook.  Visit the Live Url https://social-1b384.web.app/ .
+This project (NOMAD) is a minimal implementation of a social networking app that clones the core features of facebook.  Visit the Live Url https://social-1b384.web.app/ .
 
 It explores functionalities like:
 
