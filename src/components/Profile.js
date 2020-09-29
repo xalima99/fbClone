@@ -72,11 +72,8 @@ const Profile = () => {
                       coverImg: url,
                     },
                   });
-                  // window.setTimeout(() => {
-                  //   window.location.reload();
-                  // }, 4000);
                 });
-              toast.success("Cover updated, page will reload in 5 seconds");
+              toast.success("Cover updated");
               setProgress(0);
 
               setImage(null);
@@ -109,7 +106,6 @@ const Profile = () => {
           })
           .then(() => {
             if (id !== authuid) {
-          
               db.collection("users")
                 .doc(authuid)
                 .collection("friends")
@@ -117,22 +113,18 @@ const Profile = () => {
                 .get()
                 .then((item) => {
                   if (item.exists) {
-                   
                     setalreadyFriend(true);
                   } else {
-              
                     setalreadyFriend(false);
                   }
-                 
                 });
             }
           });
-          setTimeout(() => {
-            setinfosLoading(false)
-          }, 800);
-        
+        setTimeout(() => {
+          setinfosLoading(false);
+        }, 800);
       });
-  }, [id]);
+  }, [id, ownPost]);
 
   const addHim = () => {
     dispatch(
@@ -150,10 +142,10 @@ const Profile = () => {
     dispatch(
       unfriend({
         source: authuid,
-        target: id
+        target: id,
       })
     );
-  }
+  };
 
   return (
     <div>
@@ -214,12 +206,13 @@ const Profile = () => {
                   </p>
                   {id !== authuid ? (
                     alreadyFriend ? (
-                      <button style={{cursor:"pointer"}}
+                      <button
+                        style={{ cursor: "pointer" }}
                         type="button"
                         className="btn btn-danger btn-sm mt-2"
                         onClick={onUnfriend}
                       >
-                       Unfriend
+                        Unfriend
                       </button>
                     ) : send ? (
                       <button

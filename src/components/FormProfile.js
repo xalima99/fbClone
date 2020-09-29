@@ -95,11 +95,8 @@ const FormProfile = ({ profileInfos }) => {
                     },
                   });
                   setProgress(0);
-                  window.setTimeout(() => {
-                    window.location.reload();
-                  }, 4000);
                 });
-              toast.success("Update Successful : Page will reload in 5 seconds");
+              toast.success("Update Successful");
             });
         }
       );
