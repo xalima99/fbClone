@@ -17,7 +17,7 @@ const LeftContent = () => {
             <i className="fa fa-ellipsis-h" />
           </span>
         </Link>
-        <Link to="#">
+        <Link to="/messenger">
           <img alt="creationfallbook" src="http://icons.iconarchive.com/icons/wineass/ios7-redesign/512/Messages-icon.png" />{" "}
           Messenger
           <span className="counter">1</span>
@@ -50,10 +50,6 @@ const LeftContent = () => {
         </div>
         <div className="group-content">
           <h4>create</h4>
-          <Link to="#">
-            <img alt="creationfallbook" src="http://1agb93314bcf1knhv22id9u9.wpengine.netdna-cdn.com/wp-content/uploads/2015/02/Marketing_Advertising_Icon.png" />{" "}
-            Ad
-          </Link>
           <Link to="#">
             <img alt="creationfallbook" src="http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-13/512/Webpage-icon.png" />{" "}
             Page

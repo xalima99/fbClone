@@ -3,6 +3,8 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import {useSelector} from 'react-redux'
 import {Redirect} from 'react-router-dom'
+import connecting from '../assets/imgs/homelogo.png';
+import MobiLog from './MobiLog'
 
 const Sub = () => {
     const auth = useSelector(state => state.auth)
@@ -21,11 +23,11 @@ const Sub = () => {
             <div className="mainsubdiv">
               <div className="welcome">
                 <div className="welcometext">
-                  Facebook helps you connect and share with the people in your
-                  life.
+                  NOMAD is a small clone of Facebook. Made by Amadou Fall.
+                  Tech Stack : React, Redux, Firebase. <a href=" https://github.com/xalima99/fbClone">Github</a>
                 </div>
                 <div className="welcomepic">
-                  <img src="images/connecting.png" alt="welcome" />
+                  <img src={connecting} alt="welcome" />
                 </div>
               </div>
               <SignupForm />
@@ -35,48 +37,11 @@ const Sub = () => {
         {/*Code for Mobile Screen*/}
         <div className="mobile">
           <div className="mobheader">
-            <img alt="welcome" src="images/fblogo.png" className="mobfblogo" />
+           
           </div>
           <div id="mobapplink" className="clearfix">
-            <a href="#">
-              <img alt="welcome" src="images/fbandroid.png" id="mobandroidpic" />
-              <div id="getfbandroid">
-                Get Facebook for Android and browse faster.
-              </div>
-            </a>
           </div>
-          <div className="mobmaindiv">
-            <div id="mobtextdiv">
-              <input
-                type="text"
-                className="mobtextbox mobtextbox1"
-                placeholder="Mobile number or email address"
-              />
-              <input
-                type="password"
-                className="mobtextbox mobtextbox2"
-                placeholder="Password"
-              />
-            </div>
-            <div className="mobloginbuttondiv">
-              <input
-                type="submit"
-                className="mobloginbutton"
-                defaultValue="Log In"
-              />
-            </div>
-            <div id="ordiv">
-              <span id="or">or</span>
-            </div>
-            <div id="mobcreatediv">
-              <button id="mobcreate">Create New Account</button>
-            </div>
-            <div className="mobforgotpw">
-              <a href="#">Forgotten password?</a>
-              <span>·</span>
-              <a href="#">Help Center</a>
-            </div>
-          </div>
+          <MobiLog />
           <div className="mobfooter">
             <div id="moblangs">
               <div className="item1">
@@ -119,22 +84,11 @@ const Sub = () => {
                   target="_blank"
                   id="mobcopyrightfblink"
                 >
-                  Facebook
+                  Nomad
                 </a>{" "}
-                ©2019
+                ©2020
               </span>
               <br />
-              <span id="mobdisclaimer">
-                UI cloned for educational purposes by{" "}
-                <a
-                  href="https://www.linkedin.com/in/pranavks/"
-                  target="_blank"
-                  id="mobpranavks"
-                >
-                  Pranav K S &nbsp;
-                  <i className="fa fa-linkedin-square" />
-                </a>
-              </span>
             </div>
           </div>
         </div>

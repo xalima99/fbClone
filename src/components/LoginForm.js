@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { logIn } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-import fblogo from "../assets/imgs/fblogo.png";
+import fblogo from "../assets/imgs/homelogo.png";
 import { ToastContainer, toast } from "react-toastify";
-import { Redirect } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -50,7 +49,6 @@ const LoginForm = () => {
       <header id="yo">
         
         <div className="headersubdiv">
-          <img src={fblogo} className="fblogo" />
           <div className="loginform">
             {/* {error ? <ErrorAlert message={displayError} /> : null} */}
             <form onSubmit={onLogIn}>

@@ -2,24 +2,27 @@ import React, { useEffect, useState } from "react";
 import Layout from "./Layout";
 import { useParams } from "react-router-dom";
 import db, { storage, timestamp } from "../redux/firebase/firebase";
-import SinglePost from "./SinglePost";
-import FeedContent from "./FeedContent";
 import ProfileFeed from "./ProfileFeed";
 import FormProfile from "./FormProfile";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { addFriend, unfriend } from "../redux/actions";
 
 const Profile = () => {
   const { id } = useParams();
   const [profileInfos, setprofileInfoss] = useState([]);
   const [infosLoading, setinfosLoading] = useState(true);
-  const coverImg = useSelector(state => state.auth.coverImg)
-  const authuid = useSelector(state => state.auth.uid)
+  const coverImg = useSelector((state) => state.auth.coverImg);
+  const authuid = useSelector((state) => state.auth.uid);
+  const auth = useSelector((state) => state.auth);
   const [ownPost, setownPost] = useState([]);
   const [image, setImage] = useState("");
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
+  const [send, setsend] = useState(false);
+  const [alreadyFriend, setalreadyFriend] = useState(null);
+
   const [cover, setcover] = useState(
     "https://tokystorage.s3.amazonaws.com/images/default-cover.png"
   );
@@ -30,7 +33,6 @@ const Profile = () => {
       setImage(e.target.files[0]);
     }
   };
-
 
   const handleUpload = (e) => {
     e.preventDefault();
@@ -70,12 +72,14 @@ const Profile = () => {
                       coverImg: url,
                     },
                   });
+                  // window.setTimeout(() => {
+                  //   window.location.reload();
+                  // }, 4000);
                 });
-              toast.success("Cover successfully updated");
+              toast.success("Cover updated, page will reload in 5 seconds");
               setProgress(0);
-              
-                setImage(null);
-               
+
+              setImage(null);
             });
         }
       );
@@ -89,7 +93,6 @@ const Profile = () => {
       .then((doc) => {
         if (doc.exists) {
           setprofileInfoss(doc.data());
-
         }
 
         db.collection("allposts")
@@ -103,12 +106,54 @@ const Profile = () => {
               }
             });
             setownPost(own.map((el) => el));
+          })
+          .then(() => {
+            if (id !== authuid) {
+          
+              db.collection("users")
+                .doc(authuid)
+                .collection("friends")
+                .doc(id)
+                .get()
+                .then((item) => {
+                  if (item.exists) {
+                   
+                    setalreadyFriend(true);
+                  } else {
+              
+                    setalreadyFriend(false);
+                  }
+                 
+                });
+            }
           });
-
-        setinfosLoading(false);
-      });
-  }, [id,ownPost]);
+          setTimeout(() => {
+            setinfosLoading(false)
+          }, 800);
         
+      });
+  }, [id]);
+
+  const addHim = () => {
+    dispatch(
+      addFriend({
+        source: authuid,
+        target: id,
+        name: `${auth.FirstName} ${auth.LastName}`,
+        userImg: auth.userImg,
+      })
+    );
+    setsend(true);
+  };
+
+  const onUnfriend = () => {
+    dispatch(
+      unfriend({
+        source: authuid,
+        target: id
+      })
+    );
+  }
 
   return (
     <div>
@@ -143,7 +188,7 @@ const Profile = () => {
                     ? `url(${profileInfos.coverImg}) center center fixed`
                     : `url(${cover})`,
                   backgroundSize: "cover",
-                  objectFit: "cover"
+                  objectFit: "cover",
                 }}
               >
                 <div className="container">
@@ -167,36 +212,71 @@ const Profile = () => {
                     Member since :{" "}
                     {new Date(profileInfos.createdAt?.toDate()).toUTCString()}
                   </p>
+                  {id !== authuid ? (
+                    alreadyFriend ? (
+                      <button style={{cursor:"pointer"}}
+                        type="button"
+                        className="btn btn-danger btn-sm mt-2"
+                        onClick={onUnfriend}
+                      >
+                       Unfriend
+                      </button>
+                    ) : send ? (
+                      <button
+                        type="button"
+                        className="btn btn-success btn-lg mt-2"
+                        disabled
+                      >
+                        REQUEST SENT
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-success btn-lg mt-2"
+                        onClick={addHim}
+                      >
+                        <i class="fas fa-user-plus"></i> ADD FRIEND
+                      </button>
+                    )
+                  ) : null}
                 </div>
                 {authuid === id ? (
-                <form>
-                  <div className="form-group text-center">
-                    {image ? (
-                      <progress
-                        className="imageupload__progress"
-                        value={progress}
-                        max="100"
+                  <form>
+                    <div className="form-group text-center imga">
+                      {image ? (
+                        <progress
+                          className="imageupload__progress"
+                          value={progress}
+                          max="100"
+                        />
+                      ) : null}
+                      <label
+                        htmlFor="imageUpload"
+                        className="btn btn-info btn-large"
+                      >
+                        UPDATE COVER PICTURE
+                      </label>
+                      <input
+                        type="file"
+                        name='"imageUpload"'
+                        id="imageUpload"
+                        onChange={handleChange}
+                        className="hide"
                       />
-                    ) : null}
-                    <label htmlFor="imageUpload" className="btn btn-info btn-large">
-                      UPDATE COVER PICTURE
-                    </label>
-                    <input
-                      type="file"
-                      name='"imageUpload"'
-                      id="imageUpload"
-                      onChange={handleChange}
-                      className="hide"
-                    />
-                    {image ? (
-                      <div className="">
-                        <button className="btn btn-sm btn-success" type="submit" onClick={handleUpload}>
-                          ENVOYER
-                        </button>
-                      </div>
-                    ) : null}
-                  </div>
-                </form>) : null }
+                      {image ? (
+                        <div className="">
+                          <button
+                            className="btn btn-sm btn-success"
+                            type="submit"
+                            onClick={handleUpload}
+                          >
+                            ENVOYER
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
+                  </form>
+                ) : null}
               </div>
             </div>
             <div className="row">
@@ -206,16 +286,45 @@ const Profile = () => {
                   <ProfileFeed posts={ownPost} />
                 </div>
               </div>
-
-              {
-                authuid === id ? (
-                   <div className="col-md-4">
-                <FormProfile profileInfos={profileInfos} />
+              <div className="col-md-4">
+                {authuid === id ? (
+                  <FormProfile profileInfos={profileInfos} />
+                ) : null}
+                <div className="jumbotron mx-3">
+                  <div className="text-center mb-4 pb-4">
+                    <h4>{profileInfos?.FirstName}'s Infos</h4>
+                  </div>
+                  <p>
+                    <strong>Status :</strong>{" "}
+                    {profileInfos?.isOnline ? (
+                      <>
+                        <i
+                          class="fas fa-globe-europe"
+                          style={{ color: "green" }}
+                        ></i>{" "}
+                        Online
+                      </>
+                    ) : (
+                      <>
+                        <i
+                          class="fas fa-globe-europe"
+                          style={{ color: "red" }}
+                        ></i>{" "}
+                        Offline
+                      </>
+                    )}
+                  </p>
+                  <p>
+                    <strong>Email :</strong> {profileInfos?.email}
+                  </p>
+                  <p>
+                    <strong>BirthDay :</strong> {profileInfos?.birthday}
+                  </p>
+                  <p>
+                    <strong>Gender :</strong> {profileInfos?.Gender}
+                  </p>
+                </div>
               </div>
-                ) : null
-
-              }
-             
             </div>
           </>
         )}

@@ -10,7 +10,7 @@
 	height: 44px;
 	min-width: 320px;
 	width: 100%;
-	background-color: #3B5998;
+	background-color: #78265b;
 	display: flex;
 }
 .mobfblogo {
@@ -120,8 +120,8 @@
 	height: 36px;
 	width: 169px;
 	color: white;
-	background-color: #00a400;
-	border: 1px solid #00a400;
+	background-color: #78265b;
+	border: 1px solid #78265b;
 	border-radius: 5px;
 	font-size: 14px;
 	font-weight: bold;

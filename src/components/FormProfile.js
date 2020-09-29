@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import db, { storage } from "../redux/firebase/firebase";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 const FormProfile = ({ profileInfos }) => {
   const [image, setImage] = useState("");
   const [progress, setProgress] = useState(0);
-  const [posting, setposting] = useState(true);
   const [firstName, setfirstName] = useState(profileInfos.FirstName);
   const [lastName, setlastName] = useState(profileInfos.LastName);
   const [touched, settouched] = useState(false);
@@ -22,17 +21,21 @@ const FormProfile = ({ profileInfos }) => {
   };
 
   useEffect(() => {
-    if(!image && firstName == profileInfos.FirstName && lastName && profileInfos.LastName){
-      settouched(false)
-    }else{
-      settouched(true)
+    if (
+      !image &&
+      firstName === profileInfos.FirstName &&
+      lastName &&
+      profileInfos.LastName
+    ) {
+      settouched(false);
+    } else {
+      settouched(true);
     }
   }, [firstName, lastName, image]);
 
-
   const handleUploadprofile = (e) => {
     e.preventDefault();
-    setposting(true);
+
     if (image) {
       const uploadTask = storage.ref(`/images/${image.name}`).put(image);
       uploadTask.on(
@@ -63,22 +66,24 @@ const FormProfile = ({ profileInfos }) => {
                   FirstName: firstName,
                   LastName: lastName,
                 })
-                .then(() => {
-                  db.collection('profilImgs').doc(id).set({
-                    profileImg: url
-                  })
-                  db.collection("allposts")
+                .then(async () => {
+                  // db.collection('profilImgs').doc(id).set({
+                  //   profileImg: url
+                  // })
+                  await db
+                    .collection("allposts")
                     .where("uid", "==", id)
                     .get()
                     .then((snapshots) => {
-                      if (snapshots.size > 0) {
-                        snapshots.forEach((post) => {
+                      if (snapshots) {
+                        snapshots.forEach(async (post) => {
+                          console.log(post.data().caption);
                           db.collection("allposts").doc(post.id).update({
                             userImg: url,
-                            FirstName: firstName,
-                      LastName: lastName
+                            FirstName:firstName,
+                            LastName: firstName,
                           });
-                        });
+                        })
                       }
                     });
                   dispatch({
@@ -86,50 +91,49 @@ const FormProfile = ({ profileInfos }) => {
                     payload: {
                       userImg: url,
                       FirstName: firstName,
-                      LastName: lastName,
+                      LastName: firstName,
                     },
                   });
                   setProgress(0);
-                  window.location.reload()
+                  window.setTimeout(() => {
+                    window.location.reload();
+                  }, 4000);
                 });
-              toast.success("Profile successfully updated");
+              toast.success("Update Successful : Page will reload in 5 seconds");
             });
         }
       );
     } else {
-        
-              //Now we post img Url inside DB
-              db.collection("users")
-                .doc(id)
-                .update({
-                  FirstName: firstName,
-                  LastName: lastName,
-                })
-                .then(() => {
-                  db.collection("allposts")
-                    .where("uid", "==", id)
-                    .get()
-                    .then((snapshots) => {
-                      if (snapshots.size > 0) {
-                        snapshots.forEach((post) => {
-                          db.collection("allposts").doc(post.id).update({
-                           FirstName: firstName,
-                      LastName: lastName
-                          });
-                        });
-                      }
-                    });
-                  dispatch({
-                    type: "UPDATE_INFOS",
-                    payload: {
-                      FirstName: firstName,
-                      LastName: lastName,
-                    },
+      //Now we post img Url inside DB
+      db.collection("users")
+        .doc(id)
+        .update({
+          FirstName: firstName,
+          LastName: lastName,
+        })
+        .then(() => {
+          db.collection("allposts")
+            .where("uid", "==", id)
+            .get()
+            .then((snapshots) => {
+              if (snapshots.size > 0) {
+                snapshots.forEach((post) => {
+                  db.collection("allposts").doc(post.id).update({
+                    FirstName: firstName,
+                    LastName: lastName,
                   });
                 });
-              toast.success("Profile successfully updated");
-            
-        
+              }
+            });
+          dispatch({
+            type: "UPDATE_INFOS",
+            payload: {
+              FirstName: firstName,
+              LastName: lastName,
+            },
+          });
+        });
+      toast.success("Update Successful");
     }
   };
 
@@ -142,7 +146,7 @@ const FormProfile = ({ profileInfos }) => {
           <p className="text-center text-muted">*Upload an profile image</p>
 
           <form className="px-4" onSubmit={handleUploadprofile}>
-            <div className="form-group text-center">
+            <div className="form-group text-center imga">
               {image ? (
                 <progress
                   className="imageupload__progress"
@@ -163,7 +167,6 @@ const FormProfile = ({ profileInfos }) => {
             </div>
             <label className="text-muted">Update Your Name</label>
             <div className="form-group input-group">
-            
               <div className="input-group-prepend">
                 <span className="input-group-text">
                   {" "}
@@ -196,7 +199,7 @@ const FormProfile = ({ profileInfos }) => {
             {/* form-group// */}
             <div className="form-group">
               <button
-              disabled={!touched}
+                disabled={!touched}
                 type="submit"
                 className="btn btn-primary btn-block"
               >

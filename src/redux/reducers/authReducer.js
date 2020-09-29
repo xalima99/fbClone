@@ -10,7 +10,9 @@ const initState = {
   error: null,
   signupErr: null,
   loginErr: null,
-  coverImg: null
+  coverImg: null,
+  inInternet: true,
+  notif: []
 };
 
 export default (state = initState, action) => {
@@ -20,12 +22,27 @@ export default (state = initState, action) => {
         ...state,
         isAuthing: true,
       };
+      case 'NOTIF':
+        return {
+          ...state,
+          notif: action.payload
+        };
     case authTypes.SIGN_IN_SUCCESS:
       return {
         ...state,
         ...action.payload.user,
         isAuthed: true,
         isAuthing: false,
+      };
+      case 'OFFLINE':
+      return {
+        ...state,
+        inInternet: false
+      };
+      case 'ONLINE':
+      return {
+        ...state,
+        inInternet: true
       };
     case "UPDATE": {
       return {

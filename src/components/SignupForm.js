@@ -3,7 +3,7 @@ import { signIn } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const SignupForm = () => {
   const [userInfos, setUserInfos] = useState({
@@ -28,7 +28,7 @@ const SignupForm = () => {
         errorMessage.message ? errorMessage.message : errorMessage
       );
     }
-  }, [userInfos,errorMessage]);
+  }, [userInfos, errorMessage]);
 
   const checkInfos = () => {
     if (
@@ -144,9 +144,7 @@ const SignupForm = () => {
                 <option value={1}>1</option>
                 <option value={2}>2</option>
                 <option value={3}>3</option>
-                <option defaultValue={4} selected>
-                  4
-                </option>
+                <option defaultValue={4}>4</option>
                 <option value={5}>5</option>
                 <option value={6}>6</option>
                 <option value={7}>7</option>
@@ -169,9 +167,7 @@ const SignupForm = () => {
                 <option value="jan">Jan</option>
                 <option value="feb">Feb</option>
                 <option value="mar">Marc</option>
-                <option value="apr" selected>
-                  Apr
-                </option>
+                <option value="apr">Apr</option>
                 <option value="may">May</option>
                 <option value="jun">Jun</option>
                 <option value="jul">Jul</option>
@@ -214,9 +210,7 @@ const SignupForm = () => {
                 <option value={1997}>1997</option>
                 <option value={1996}>1996</option>
                 <option value={1995}>1995</option>
-                <option value={1994} selected={1}>
-                  1994
-                </option>
+                <option value={1994}>1994</option>
                 <option value={1993}>1993</option>
                 <option value={1992}>1992</option>
                 <option value={1991}>1991</option>
@@ -354,9 +348,6 @@ const SignupForm = () => {
               <button type="submit" id="signupbutton">
                 Sign Up
               </button>
-            </div>
-            <div id="createpage">
-              <Link to="#">Create a Page</Link> for a celebrity, band or business.
             </div>
           </div>
         </div>
